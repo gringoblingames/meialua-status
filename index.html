@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status · Meia Lua</title>
+<meta name="description" content="A Meia Lua está no ar? O estado da mesa online de VTES, ao vivo.">
+<link rel="icon" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500;1,600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<!-- A página de status da Meia Lua (09/11). Fica fora do servidor (GitHub Pages) para continuar no ar quando ele cai.
+     Agora: pergunta ao /saude da mesa. O histórico: o UptimeRobot, com uma chave só de leitura (CHAVE, abaixo). -->
+<style>
+:root{--fundo:#0d0809;--linha:rgba(207,166,96,.16);--linha-forte:rgba(207,166,96,.32);--ouro:#cfa660;--ouro-cl:#f0d899;--sangue:#c8202c;--sangue-cl:#ec4d57;--verde:#58c27d;--verde-cl:#7fd8a0;--amar:#e0a14a;--texto:#f1e7d5;--texto-2:#c9bba6;--mudo:#8f8273;--serif:"Cormorant Garamond",serif;--sans:Manrope,system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0} [hidden]{display:none!important}
+body{min-height:100svh;color:var(--texto);font-family:var(--sans);-webkit-font-smoothing:antialiased;position:relative;
+  background:radial-gradient(ellipse 70% 55% at 50% 0%, rgba(92,22,34,.5), transparent 70%),radial-gradient(ellipse 120% 90% at 50% 40%, #1d0d12 0%, #0e0809 75%) fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23b9cbff' stroke-width='1.1'%3E%3Ccircle cx='0' cy='0' r='17'/%3E%3Ccircle cx='72' cy='0' r='17'/%3E%3Ccircle cx='0' cy='72' r='17'/%3E%3Ccircle cx='72' cy='72' r='17'/%3E%3Cpath d='M36 14C42 26 46 30 58 36C46 42 42 46 36 58C30 46 26 42 14 36C26 30 30 26 36 14Z'/%3E%3Ccircle cx='36' cy='36' r='5'/%3E%3C/g%3E%3C/svg%3E")}
+.pag{position:relative;max-width:760px;margin:0 auto;padding:36px 20px 60px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:34px}
+header img{height:34px;width:auto;display:block}
+header a.ir{font-size:13px;font-weight:700;color:var(--texto-2);text-decoration:none;border:1px solid var(--linha-forte);border-radius:10px;padding:8px 14px} header a.ir:hover{color:var(--ouro-cl);border-color:var(--ouro)}
+.etq{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ouro)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,6vw,50px);line-height:1.05;margin:8px 0 0}
+h1 em{font-style:italic;color:var(--ouro-cl)}
+.estado{display:flex;align-items:center;gap:16px;margin-top:26px;padding:20px 22px;border-radius:16px;border:1px solid var(--linha-forte);background:rgba(0,0,0,.28)}
+.luz{flex:none;width:16px;height:16px;border-radius:50%;background:var(--mudo);box-shadow:0 0 0 5px rgba(143,130,115,.15)}
+.estado.ok .luz{background:var(--verde);box-shadow:0 0 0 5px rgba(88,194,125,.16),0 0 22px rgba(88,194,125,.55);animation:pulsa 2.4s ease-in-out infinite}
+.estado.fora .luz{background:var(--sangue-cl);box-shadow:0 0 0 5px rgba(236,77,87,.18),0 0 22px rgba(236,77,87,.5)}
+.estado.lento .luz{background:var(--amar);box-shadow:0 0 0 5px rgba(224,161,74,.16)}
+@keyframes pulsa{50%{box-shadow:0 0 0 8px rgba(88,194,125,.06),0 0 26px rgba(88,194,125,.35)}}
+@media (prefers-reduced-motion:reduce){.estado.ok .luz{animation:none}}
+.estado b{display:block;font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1}
+.estado small{display:block;margin-top:3px;font-size:13px;color:var(--texto-2);line-height:1.45}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.num{padding:14px 16px;border-radius:14px;border:1px solid var(--linha);background:rgba(0,0,0,.2)}
+.num b{display:block;font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;color:var(--ouro-cl);font-variant-numeric:lining-nums tabular-nums}
+.num span{display:block;margin-top:6px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mudo)}
+section{margin-top:34px}
+h2{font-family:var(--serif);font-size:24px;font-weight:600;font-variant-numeric:lining-nums;margin-bottom:12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h2 small{font-family:var(--sans);font-size:12.5px;font-weight:600;color:var(--mudo)}
+.barras{display:grid;grid-template-columns:repeat(30,1fr);gap:3px;height:38px}
+.barras i{border-radius:3px;background:rgba(143,130,115,.25);position:relative}
+.barras i.ok{background:linear-gradient(180deg,var(--verde-cl),var(--verde))} .barras i.meio{background:var(--amar)} .barras i.ruim{background:var(--sangue-cl)}
+.barras i:hover{outline:1px solid var(--ouro-cl);outline-offset:1px}
+.legenda{display:flex;justify-content:space-between;margin-top:7px;font-size:11.5px;color:var(--mudo)}
+.taxas{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--texto-2)} .taxas b{color:var(--texto)}
+.quedas{list-style:none;border-top:1px solid var(--linha)}
+.quedas li{display:flex;justify-content:space-between;gap:12px;padding:11px 2px;border-bottom:1px solid var(--linha);font-size:13.5px}
+.quedas li span{color:var(--mudo)}
+.vazio{padding:16px 18px;border-radius:12px;border:1px dashed var(--linha-forte);font-size:13.5px;color:var(--mudo);line-height:1.5}
+.dica{position:fixed;z-index:5;pointer-events:none;padding:6px 10px;border-radius:8px;background:#1a0f12;border:1px solid var(--linha-forte);font-size:12px;color:var(--texto);white-space:nowrap;display:none}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--linha);font-size:12.5px;color:var(--mudo);line-height:1.6}
+footer a{color:var(--texto-2)}
+@media (max-width:560px){ .pag{padding:24px 16px 48px} header{margin-bottom:26px} .nums{gap:8px} .num{padding:12px} .num b{font-size:24px} .barras{gap:2px;height:32px} .estado b{font-size:22px} }
+</style>
+</head>
+<body>
+<div class="pag">
+  <header><a href="https://meialua.app.br"><img src="letreiro-400.png" alt="Meia Lua"></a><a class="ir" href="https://meialua.app.br">Ir para a mesa</a></header>
+  <div class="etq">status da mesa</div>
+  <h1>A Meia Lua está <em>no ar?</em></h1>
+
+  <div class="estado" id="estado"><span class="luz"></span><div><b>Perguntando à mesa…</b><small>Um segundo.</small></div></div>
+  <div class="nums" id="nums" hidden>
+    <div class="num"><b id="n-con">0</b><span>conectados</span></div>
+    <div class="num"><b id="n-jog">0</b><span>partidas rolando</span></div>
+    <div class="num"><b id="n-mes">0</b><span>mesas abertas</span></div>
+  </div>
+
+  <section id="historico" hidden>
+    <h2>Os últimos 30 dias <small id="h-geral"></small></h2>
+    <div class="barras" id="barras"></div>
+    <div class="legenda"><span>30 dias atrás</span><span>hoje</span></div>
+    <div class="taxas" id="taxas"></div>
+  </section>
+
+  <section id="sec-quedas" hidden>
+    <h2>As últimas quedas</h2>
+    <ul class="quedas" id="quedas"></ul>
+  </section>
+
+  <footer>Esta página fica fora do servidor da Meia Lua, para continuar no ar quando ele cai. Ela pergunta à mesa a cada minuto.<br>A Meia Lua é fan made, gratuita e sem fins comerciais. <a href="https://meialua.app.br">meialua.app.br</a></footer>
+</div>
+<div class="dica" id="dica"></div>
+<script>
+// a chave do UptimeRobot só de leitura, de um monitor (Integrations & API > Monitor-specific API key). Vazia, a página mostra só o agora
+const CHAVE = '';
+const SAUDE = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('saude') || 'https://meialua.app.br/saude'; // ?saude= só para testar aqui no computador
+const $ = s => document.querySelector(s);
+const pct = n => `${(Math.floor(n * 100) / 100).toLocaleString('pt-BR', { minimumFractionDigits: n >= 99.995 ? 0 : 2, maximumFractionDigits: 2 })}%`;
+const dur = s => { const m = Math.round(s / 60); if (m < 60) return `${Math.max(1, m)} min`; const h = Math.floor(m / 60), r = m % 60; return h < 24 ? `${h} h${r ? ` ${r} min` : ''}` : `${Math.floor(h / 24)} d ${h % 24} h`; };
+const quando = t => new Date(t * 1000).toLocaleString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).replace('.', '');
+const ligado = s => s < 3600 ? `há ${Math.max(1, Math.round(s / 60))} min` : s < 86400 ? `há ${Math.round(s / 3600)} h` : `há ${Math.round(s / 86400)} ${Math.round(s / 86400) === 1 ? 'dia' : 'dias'}`;
+
+function mostrarEstado(tipo, titulo, sub) { const el = $('#estado'); el.className = `estado ${tipo}`; el.querySelector('b').textContent = titulo; el.querySelector('small').textContent = sub; }
+async function agora() {
+  const t0 = performance.now();
+  try {
+    const r = await fetch(SAUDE, { cache: 'no-store', signal: AbortSignal.timeout(10000) }); if (!r.ok) throw new Error(r.status);
+    const d = await r.json(), ms = performance.now() - t0; if (!d.ok) throw new Error('fora');
+    mostrarEstado(ms > 4000 ? 'lento' : 'ok', ms > 4000 ? 'No ar, mas lenta' : 'Tudo funcionando', `A mesa respondeu em ${Math.round(ms)} ms. No ar desde a última atualização, ${ligado(d.ligadoHa)}.`);
+    $('#n-con').textContent = d.conectados; $('#n-jog').textContent = d.jogando; $('#n-mes').textContent = d.mesas; $('#nums').hidden = false;
+  } catch {
+    mostrarEstado('fora', 'A mesa está fora do ar', 'Não consegui falar com a Meia Lua agora. Pode ser uma atualização (leva menos de um minuto) ou uma queda: a página tenta de novo sozinha.');
+    $('#nums').hidden = true;
+  }
+}
+async function historico() {
+  if (!CHAVE) return;
+  const dia = 86400, hoje = Math.floor(Date.now() / 1000), faixas = Array.from({ length: 30 }, (_, i) => `${hoje - (30 - i) * dia}_${hoje - (29 - i) * dia}`).join('-');
+  try {
+    const r = await fetch('https://api.uptimerobot.com/v2/getMonitors', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ api_key: CHAVE, format: 'json', custom_uptime_ratios: '1-7-30', custom_uptime_ranges: faixas, logs: '1', logs_limit: '20' }) });
+    const m = (await r.json()).monitors?.[0]; if (!m) return;
+    const dias = String(m.custom_uptime_ranges ?? '').split('-').map(Number), [d1, d7, d30] = String(m.custom_uptime_ratio ?? '').split('-').map(Number);
+    $('#barras').innerHTML = dias.map((v, i) => { const d = new Date((hoje - (29 - i) * dia) * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).replace('.', ''); return `<i class="${isNaN(v) ? '' : v >= 99.9 ? 'ok' : v >= 98 ? 'meio' : 'ruim'}" data-dica="${d} · ${isNaN(v) ? 'sem dados' : `${pct(v)} no ar`}"></i>`; }).join('');
+    $('#h-geral').textContent = isNaN(d30) ? '' : `${pct(d30)} no ar`;
+    $('#taxas').innerHTML = [[d1, 'últimas 24 horas'], [d7, 'últimos 7 dias'], [d30, 'últimos 30 dias']].filter(([v]) => !isNaN(v)).map(([v, r]) => `<span><b>${pct(v)}</b> ${r}</span>`).join('');
+    $('#historico').hidden = false;
+    const quedas = (m.logs ?? []).filter(l => l.type === 1);
+    $('#quedas').innerHTML = quedas.length ? quedas.slice(0, 8).map(l => `<li>${quando(l.datetime)}<span>${l.duration ? `fora por ${dur(l.duration)}` : 'fora agora'}</span></li>`).join('') : '';
+    $('#sec-quedas').hidden = false; if (!quedas.length) $('#quedas').outerHTML = '<div class="vazio">Nenhuma queda registrada no período. Que a noite continue assim.</div>';
+  } catch { /* sem o histórico: o agora continua valendo */ }
+}
+document.addEventListener('mousemove', e => { const t = e.target.closest?.('[data-dica]'), d = $('#dica'); if (!t) { d.style.display = 'none'; return; } d.textContent = t.dataset.dica; d.style.display = 'block'; d.style.left = Math.min(innerWidth - d.offsetWidth - 8, e.clientX + 12) + 'px'; d.style.top = (e.clientY - 34) + 'px'; });
+agora(); historico(); setInterval(agora, 60000); setInterval(historico, 300000);
+</script>
+</body>
+</html>
